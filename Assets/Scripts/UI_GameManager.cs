@@ -32,7 +32,8 @@ public class UI_GameManager : MonoBehaviour
     public void EnableDisableCreditTextBox()
     {
         GameObject textBox;
-        textBox = uI_GameManager.transform.Find("textBoxCredit").gameObject;
+        textBox = uI_GameManager.transform.Find("Intro").gameObject;
+        textBox = textBox.transform.Find("textBoxCredit").gameObject;
 
         if (textBox.activeSelf)
         {
