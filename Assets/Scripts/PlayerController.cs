@@ -6,137 +6,43 @@ public class PlayerController : MonoBehaviour
 {
 
 
+    CharacterController characterController;
 
-    Animator animator;
+    public float speed = 6.0f;
+    public float jumpSpeed = 8.0f;
+    public float gravity = 20.0f;
 
-    [SerializeField]
-    private float speed = 5f;
+    private Vector3 moveDirection = Vector3.zero;
 
-    [SerializeField]
-    private float lookSensitivity = 3f;
-
-    float crossHairRange = 50f;
-
-
-    private Vector3 velocity = Vector3.zero;
-    private Vector3 rotation = Vector3.zero;
-    private float CameraUpAndDownRotation = 0f;
-    private float CurrentCameraUpAndDownRotation = 0f;
-
-    private Rigidbody rb;
-
-
-    // Start is called before the first frame update
-    private void Start()
+    void Start()
     {
-
+        characterController = GetComponent<CharacterController>();
     }
 
-    // Update is called once per frame
-    private void Update()
+    void Update()
     {
-
-
-        //refactored movement script to a better view 03/24/2021
-        Movement();
-
-        //Temporary for open inventory
-        if (Input.GetKeyDown(KeyCode.I))
+        if (characterController.isGrounded)
         {
+            // We are grounded, so recalculate
+            // move direction directly from axes
 
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = true;
+            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
+            moveDirection *= speed;
 
-            if (Cursor.visible)
+            if (Input.GetButton("Jump"))
             {
-                Cursor.lockState = CursorLockMode.Confined;
-                Cursor.visible = true;
+                moveDirection.y = jumpSpeed;
             }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
-
         }
 
-        if (Input.GetKeyDown(KeyCode.P))
-        {
+        // Apply gravity. Gravity is multiplied by deltaTime twice (once here, and once below
+        // when the moveDirection is multiplied by deltaTime). This is because gravity should be applied
+        // as an acceleration (ms^-2)
+        moveDirection.y -= gravity * Time.deltaTime;
 
-            PauseButtonPressed();
-
-        }
+        // Move the controller
+        characterController.Move(moveDirection * Time.deltaTime);
     }
-
-    //runs per physics iteration
-    private void FixedUpdate()
-    {
-        //if (velocity != Vector3.zero)
-        //{
-        //    rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);
-
-
-        //}
-
-        //rb.MoveRotation(rb.rotation * Quaternion.Euler(rotation));
-
-
-    }
-
-
-    #region Player movements
-    void Movement()
-    {
-        //Calculate movement veloc,ty as a 3d vector
-        float _xMovement = Input.GetAxis("Horizontal");
-        float _zMovement = Input.GetAxis("Vertical");
-
-        Vector3 _movementHorizontal = transform.right * _xMovement;
-        Vector3 _movementVertical = transform.forward * _zMovement;
-
-        //Final movement velocty vector
-        Vector3 _movementVelocity = (_movementHorizontal + _movementVertical).normalized * speed;
-
-        //Apply movement
-        Move(_movementVelocity);
-
-
-        //calculate rotation as a 3D vector for turning around.
-        float _yRotation = Input.GetAxis("Mouse X");
-        Vector3 _rotationVector = new Vector3(0, _yRotation, 0) * lookSensitivity;
-
-
-        //Apply rotation
-        Rotate(_rotationVector);
-
-
-
-        //Calculate look up and down camera rotation
-        float _cameraUpDownRotation = Input.GetAxis("Mouse Y") * lookSensitivity;
-
-        //Apply rotation
-        RotateCamera(_cameraUpDownRotation);
-    }
-
-    void Move(Vector3 movementVelocity)
-    {
-        velocity = movementVelocity;
-    }
-
-    void Rotate(Vector3 rotationVector)
-    {
-        rotation = rotationVector;
-
-    }
-
-    void RotateCamera(float cameraUpAndDownRotation)
-    {
-        CameraUpAndDownRotation = cameraUpAndDownRotation;
-    }
-
-
-
-    #endregion
 
     void PauseButtonPressed()
     {
