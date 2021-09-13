@@ -12,7 +12,11 @@ public class PlayerController : MonoBehaviour
     public float jumpSpeed = 8.0f;
     public float gravity = 20.0f;
 
+
     private Vector3 moveDirection = Vector3.zero;
+
+
+
 
     void Start()
     {
@@ -42,7 +46,14 @@ public class PlayerController : MonoBehaviour
 
         // Move the controller
         characterController.Move(moveDirection * Time.deltaTime);
-    }
+
+
+
+        }
+
+
+    //Camera movement
+
 
     void PauseButtonPressed()
     {
@@ -52,5 +63,6 @@ public class PlayerController : MonoBehaviour
         //UI_GameManager.EnableDisable
         
     }
+
 
 }
