@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UI_GameManager : MonoBehaviour
 {
@@ -27,6 +28,7 @@ public class UI_GameManager : MonoBehaviour
     public void CloseIntroMenu()
     {
         uI_GameManager.transform.Find("Intro").gameObject.SetActive(false);
+        SceneManager.LoadScene("MainScene");
     }
 
     public void EnableDisableCreditTextBox()
